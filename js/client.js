@@ -1210,12 +1210,30 @@
   })(Backbone.View);
 
   $(function() {
+    var bitrate, getQueryVariable, password, user;
+    getQueryVariable = function(variable, default_val) {
+      var i, pair, query, vars;
+      query = window.location.search.substring(1);
+      vars = query.split("&");
+      i = 0;
+      while (i < vars.length) {
+        pair = vars[i].split("=");
+        if (pair[0] === variable) {
+          return pair[1];
+        }
+        i++;
+      }
+      return default_val;
+    };
+    user = getQueryVariable('user', 'source');
+    password = getQueryVariable('password', 'hackme');
+    bitrate = parseInt(getQueryVariable('bitrate', '320'));
     Webcaster.mixer = new Webcaster.Model.Mixer({
       slider: 0
     });
     Webcaster.settings = new Webcaster.Model.Settings({
-      uri: "ws://source:hackme@localhost:8080/mount",
-      bitrate: 128,
+      uri: "ws://" + user + ":" + password + "@harbor.udonradio.fr:8081/live",
+      bitrate: bitrate,
       bitrates: [8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256, 320],
       samplerate: 44100,
       samplerates: [8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000],
